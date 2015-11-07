@@ -1,0 +1,20 @@
+.row.man.pan(ng-if="userBasic.userType=='student'")
+    .row.man.pan.dash-bars.bbs.student-dashboard
+        .col-md-3.pan.brs.text-center.cursorp(ng-click="selectedTab='COURSES';tpl='javascripts/app/templates/student/courses.html'", ng-class="selectedTab == 'COURSES' ? 'bg-grey-light text-primary' : 'text-6' ")
+            p.font18.mas
+                i.icon-th-list
+                | Courses
+        .col-md-3.pan.brs.text-center.cursorp(ng-click="selectedTab='APPOINTMENTS';tpl='javascripts/app/templates/student/appointments.html'", ng-class="selectedTab == 'APPOINTMENTS' ? 'bg-grey-light text-primary' : 'text-6' ")
+            p.font18.mas
+                i.icon-videocam-1
+                | Appointments
+        .col-md-3.pan.brs.text-center.cursorp(ng-click="selectedTab='PAYMENTS';tpl='javascripts/app/templates/student/payments.html'", ng-class="selectedTab == 'PAYMENTS' ? 'bg-grey-light text-primary' : 'text-6' ")
+            p.font18.mas
+                i.icon-credit-card
+                | Payments
+        .col-md-3.pan.brs.text-center.cursorp(ng-click="selectedTab='FAQ';tpl='javascripts/app/templates/student/faq.html'", ng-class="selectedTab == 'FAQ' ? 'bg-grey-light text-primary' : 'text-6' ")
+            p.font18.mas
+                i.icon-help-circled
+                | FAQ
+    .row.man.pan.animate.slide-down(ng-include="tpl")
+    h6.light-weight.text-dark-gray2.pan.mal.text-center(ng-show="!userBasic") Loading dashboard...

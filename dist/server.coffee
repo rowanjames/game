@@ -9,6 +9,10 @@ errorHandler = require 'errorhandler'
 exports.startServer = (config, callback) ->
   app = express()
 
+  AppVars = require './lib/app_vars'
+  newVar = new AppVars(app: app)
+  config.appVars = newVar.getVars()
+
   # setup views and port
   app.set 'views', config.server.views.path
   app.engine config.server.views.extension, engines[config.server.views.compileWith]
@@ -31,10 +35,14 @@ exports.startServer = (config, callback) ->
     reload:    config.liveReload.enabled
     optimize:  config.isOptimize ? false
     cachebust: if process.env.NODE_ENV isnt "production" then "?b=#{(new Date()).getTime()}" else ''
+    rootUrl: config.appVars.rootUrl
 
   router = express.Router()
   router.get '/', (req, res) ->
     res.render 'index', routeOptions
+
+  router.get '/app', (req, res) ->
+    res.render 'app', routeOptions  
     
 
   # routes

@@ -1,0 +1,46 @@
+.col-md-2.brs.pan(ng-style='paneStyle')
+    .col-md-12.bg-grey-light.text-center.text-primary.bbs.cursorp.menu-pane-options(ng-click="editCourse.addUnit()")
+        span 
+            i(ng-class="editCourse.creatingUnit ? 'icon-spin5 animate-spin' : 'icon-plus'")
+            |&nbsp;New Unit 
+    .col-md-12.man.pan.scrollcolumn(ng-style="menuPaneStyle")
+        .col-md-12.man.pln.prn.ptl.pbl.bbs(ng-repeat="(unitKey,unit) in editCourse.course.units")
+            span.mls.font18.text-dark-gray(style='word-break: break-all;') 
+                | Unit {{$index + 1}}
+                i.icon-cancel.pull-right.cursorp.font12.text-danger(ng-click="editCourse.deleteUnit(unitKey)")
+            h6.text-bold.text-dark-gray2.man.pas
+                | {{unit.name}}
+            ul.nav.nav-list.brn.pbn
+                li(ng-repeat="(lessonKey, lesson) in unit.lessons")
+                    span.font14.text-dark-gray(style='word-break: break-all;') 
+                        | Lesson {{$index + 1}}
+                        i.icon-cancel.pull-right.cursorp.font12.text-danger(ng-click="editCourse.deleteLesson(unitKey, lessonKey)")
+                    h6.font20.text-bold.mtn.text-dark-gray2(style='word-break: break-all;') {{lesson.name}}
+                    ul.nav.nav-list.brn.pbn
+                        li(ng-repeat="(projectKey, project) in lesson.projects", ng-class="editCourse.projectKey == projectKey ? 'active' : ''", ng-init="!editCourse.projectKey ? editCourse.changeProject(unitKey, lessonKey, projectKey, $parent.$parent.$index, $parent.$index, $index) : ''")
+                            a.font14.text-dark-gray2.cursorp(style='word-break: break-all;font-weight:400' , ng-click="editCourse.changeProject(unitKey, lessonKey, projectKey, $parent.$parent.$index, $parent.$index, $index)")
+                                | {{$index + 1}}. {{project.name}}
+                                i.icon-cancel.pull-right.cursorp.font12.text-danger(ng-click="editCourse.deleteProject(unitKey, lessonKey, projectKey)")
+                        .label.label-default.cursorp.icon-plus(style='width:100%', ng-click="editCourse.addProject(unitKey, lessonKey)") New Project        
+                .label.label-default.cursorp.icon-plus(style='width:100%', ng-click="editCourse.addLesson(unitKey)") New Lesson
+                        
+.col-md-5.brs.pan(ng-style="paneStyle")
+    .col-md-12.man.pan.edit-pane-options
+        .col-md-6.text-center.pan.bbs.brs
+            input.form-control(type='text', style='border:0', ng-model="editCourse.course.name", ng-change="editCourse.onChangeNames()", ng-disabled="!editCourse.course.units[editCourse.unitKey].lessons[editCourse.lessonKey].projects[editCourse.projectKey]")
+        .col-md-6.text-center.pan.bbs
+            input.form-control(type='text', style='border:0', ng-model="editCourse.course.units[editCourse.unitKey].name", ng-change="editCourse.onChangeNames()", ng-disabled="!editCourse.course.units[editCourse.unitKey].lessons[editCourse.lessonKey].projects[editCourse.projectKey]")
+        .col-md-6.text-center.pan.bbs.brs
+            input.form-control(type='text', style='border:0', ng-model="editCourse.course.units[editCourse.unitKey].lessons[editCourse.lessonKey].name", ng-change="editCourse.onChangeNames()", ng-disabled="!editCourse.course.units[editCourse.unitKey].lessons[editCourse.lessonKey].projects[editCourse.projectKey]")
+        .col-md-6.text-center.pan.bbs
+            input.form-control(type='text', style='border:0', ng-model="editCourse.course.units[editCourse.unitKey].lessons[editCourse.lessonKey].projects[editCourse.projectKey].name", ng-change="editCourse.onChangeNames()", ng-disabled="!editCourse.course.units[editCourse.unitKey].lessons[editCourse.lessonKey].projects[editCourse.projectKey]")
+        .col-md-12.man.pan.animate.slide-down.text-center(ng-if="!editCourse.course.units[editCourse.unitKey].lessons[editCourse.lessonKey].projects[editCourse.projectKey]")            
+            h3.text-dark-gray Please select a project to edit.                
+
+    textarea.custombox(ng-style="editPaneStyle", ng-model="editCourse.content.markdown", ng-keyup="editCourse.convertMarked()",  style='border:0;width:100%', ng-disabled="!editCourse.course.units[editCourse.unitKey].lessons[editCourse.lessonKey].projects[editCourse.projectKey]")
+
+    
+
+
+.col-md-5.brs
+    .col-md-12.man.pan.scrollcolumn(ng-style="paneStyle", ng-bind-html="editCourse.content.html", style="word-wrap:break-word")

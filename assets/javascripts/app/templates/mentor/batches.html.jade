@@ -1,0 +1,90 @@
+.row.man.pan.batches-tab-option-dashboard
+    .col-md-12.bbs.man.pan.bg-grey-light
+        .col-md-3.man.pan
+            .btn-group.btn-group-xs.mbm.mls.mtm(style="padding-left:-13px", ng-if="batchesTab.currentCourse")
+                button.btn.btn-default.dropdown-toggle.bg-white.text-dark-gray(type="button", data-toggle="dropdown", style="background:#fff;color:#888;border:1px solid #ddd;")
+                    | {{batchesTab.currentCourse.name}}
+                    span.caret
+                ul.dropdown-menu.dropdown-menu.bor(role="menu", style='margin-top:2px;')
+                    li(ng-click="batchesTab.changeCourse(idxcourse)", ng-repeat="(courseId, idxcourse) in batchesTab.coursesIndex", ng-class="batchesTab.currentCourse.$id == idxcourse.$id ? 'active' : ''")
+                        a(href="") {{idxcourse.name}}
+                    
+        .col-md-4.man.pan.text-center
+            h6.man.ptm.text-dark-gray(ng-if="batchesTab.currentCourse") {{batchesTab.currentCourse.name}} 
+        .col-md-5.man.pan
+            .btn-xs.btn.mbm.mtm.pull-right.mrs(ng-class="batchesTab.selectedTab=='FINISHED BATCHES' ? 'btn-primary': 'btn-default'", ng-click="batchesTab.selectedTab='FINISHED BATCHES'") Finished Batches
+            //- .btn-xs.btn.mbm.mtm.pull-right.mrs.btn-default(ng-class="batchesTab.selectedTab=='BATCH DETAILS' ? 'btn-primary': 'btn-default'", ng-click="batchesTab.selectedTab='BATCH DETAILS'") Batch Details
+            .btn-xs.btn.mbm.btn-default.mtm.pull-right.mrs(ng-class="batchesTab.selectedTab=='NEW BATCH' ? 'btn-primary': 'btn-default'", ng-click="batchesTab.selectedTab='NEW BATCH'") New Batch
+            .btn-xs.btn.mbm.btn-default.mtm.pull-right.mrs(ng-class="batchesTab.selectedTab=='CURRENT BATCHES' ? 'btn-primary': 'btn-default'", ng-click="batchesTab.selectedTab='CURRENT BATCHES'") Current Batches
+            
+
+.row.man.pan.scrollcolumn(ng-show="batchesTab.selectedTab=='CURRENT BATCHES'", ng-style="batchesTab.paneStyle")
+    table.table.table-striped
+        thead
+            tr
+                th Start Date
+                th End Date
+                th Enrolled Students
+                th Mentor Name
+                th
+                th
+                th(ng-show="selectedBatchesTab!='FINISHED'")
+                th(ng-show="selectedBatchesTab!='FINISHED'")
+        tbody            
+            tr(ng-repeat="batch in batchesTab.currentBatches")
+                td {{batch.startDate}}    
+                td {{batch.endDate}}    
+                td {{batch.students.length || 0}}    
+                td {{batch.mentorName}}    
+                td 
+                    .btn.btn-xs(ng-class="batch.status == 'OPEN' ? 'btn-primary' : 'btn-default' ", ng-click="batchesTab.changeStatus(batch, 'OPEN')") Open for Admissions
+                td 
+                    .btn.btn-xs(ng-class="batch.status == 'IN PROGRESS' ? 'btn-primary' : 'btn-default' ", ng-click="batchesTab.changeStatus(batch, 'IN PROGRESS')") In Progress
+                td 
+                    .btn.btn-xs(ng-class="batch.status == 'COMPLETED' ? 'btn-primary' : 'btn-default' ", ng-click="batchesTab.changeStatus(batch, 'COMPLETED')") Mark as completed
+                td 
+                    a.cursorp(ng-click='batchesTab.toggleBatchDetails(batchKey)') BATCH DETAILS
+
+//- .row.man.pan(ng-show="batchesTab.selectedTab=='BATCH DETAILS'")
+    h1 yayy kjnk   
+.row.man.pan(ng-show="batchesTab.selectedTab=='NEW BATCH'")
+    .col-md-4.col-md-offset-4.bor.pal.mtl
+        h6 New Batch
+        form(name='newBatchForm')
+            .form-group
+                label Start Date
+                input.form-control.bor(name='startDate', type='date', placeholder='Start Date',ng-model="batchesTab.newBatchModel.startDate", ng-required='true')
+            .form-group
+                label End Date
+                input.form-control.bor(name='endDate', type='date', placeholder='End Date', ng-model="batchesTab.newBatchModel.endDate", ng-required='true')
+            .form-group
+                label Student Limit
+                input.form-control.bor(name='studentLimit', type='number', placeholder='Student number limit', ng-model="batchesTab.newBatchModel.studentLimit", min="1" max="40", ng-required='true')
+                        
+            .btn.btn-primary(ng-click='batchesTab.createBatch(batchesTab.startDate, batchesTab.endDate, newBatchForm)') 
+                | Create&nbsp;
+                i.icon-spin5.animate-spin(ng-show="showNewBatchFormSpinner")
+
+
+.row.man.pan(ng-show="batchesTab.selectedTab=='FINISHED BATCHES'")
+    table.table.table-striped
+        thead
+            tr
+                th Start Date
+                th End Date
+                th Enrolled Students
+                th Mentor Name
+                th
+                th
+                th(ng-show="selectedBatchesTab!='FINISHED'")
+                th(ng-show="selectedBatchesTab!='FINISHED'")
+        tbody            
+            tr
+                td yay    
+                td yay    
+                td yay    
+                td yay    
+                td yay    
+                td yay    
+                td yay    
+                td yay    

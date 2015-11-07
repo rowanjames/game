@@ -1,0 +1,28 @@
+.row.man.pan(ng-if="userBasic.userType=='mentor'")
+    .row.man.pan.dash-bars.bbs.mentor-dashboard
+        .col-md-2.pan.brs.text-center.cursorp(ng-click="selectedTab='COURSES';tpl='javascripts/app/templates/mentor/courses.html'", ng-class="selectedTab == 'COURSES' ? 'bg-grey-light text-primary' : 'text-6' ")
+            p.font18.mas
+                i.icon-th-list
+                | Courses
+        .col-md-2.pan.brs.text-center.cursorp.ng-cloak(ng-click="selectedTab='BATCHES';;tpl='javascripts/app/templates/mentor/batches.html';batchesTab.boot()", ng-class="selectedTab == 'BATCHES' ? 'bg-grey-light text-primary' : 'text-6' ")
+            p.font18.mas
+                i.icon-th-large
+                | Batches
+        .col-md-2.pan.brs.text-center.cursorp(ng-click="selectedTab='BATCH LAYOUT';tpl='javascripts/app/templates/mentor/batch-layout.html'", ng-class="selectedTab == 'BATCH LAYOUT' ? 'bg-grey-light text-primary' : 'text-6' ")
+            p.font18.mas
+                i.icon-clock-1
+                | Batch Layout
+        .col-md-2.pan.brs.text-center.cursorp(ng-click="selectedTab='APPOINTMENTS';tpl='javascripts/app/templates/mentor/appointments.html'", ng-class="selectedTab == 'APPOINTMENTS' ? 'bg-grey-light text-primary' : 'text-6' ")
+            p.font18.mas
+                i.icon-videocam-1
+                | Appointments
+        .col-md-2.pan.brs.text-center.cursorp(ng-click="selectedTab='GUILDS';tpl='javascripts/app/templates/mentor/guilds.html'", ng-class="selectedTab == 'GUILDS' ? 'bg-grey-light text-primary' : 'text-6' ")
+            p.font18.mas
+                i.icon-graduation-cap
+                | &nbsp;Guilds
+        .col-md-2.pan.brs.text-center.cursorp(ng-click="selectedTab='PAYMENTS';tpl='javascripts/app/templates/mentor/payments.html'", ng-class="selectedTab == 'PAYMENTS' ? 'bg-grey-light text-primary' : 'text-6' ")
+            p.font18.mas
+                i.icon-credit-card
+                | Payments        
+    .row.man.pan.animate.slide-down(ng-include="tpl")
+    h6.light-weight.text-dark-gray2.pan.mal.text-center(ng-show="!userBasic") Loading dashboard...

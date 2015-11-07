@@ -1,0 +1,161 @@
+.row.pan.man
+    .col-md-12.pan
+        .col-md-12.bbs.pas
+            //.col-md-2.pll
+                .btn.btn-xs(ng-click="layout=!layout", ng-class="layout ? 'btn-primary' : 'btn-default'")
+                    |Course Preview&nbsp;
+                    i.icon-desktop-1
+                //.label.label-default.brn.font10.cursorp.ng-cloak(ng-click="layout=!layout", ng-show="!layout")
+                    |SHOW INDEX BAR&nbsp;
+                    i.icon-angle-right
+                //.btn-sm.brn.mbn.mrs.text-center.cursorp(ng-init='layout=false', ng-click="layout=!layout", ng-class="layout ? 'btn-primary' : 'btn-default'")
+                    i.icon-angle-left
+            .col-md-5.pll.prl
+                //input.form-control#fileup(type='file', title="foo")
+                //.label.label-default.mrl.col-md-offset-2.cursorp(ng-click="selectAFile()", ng-class="selectAFileVar ? 'label-primary' : ''label-default''") Select a file
+                .btn.btn-primary.btn-xs(ng-click="triggerUploadToCloud()")
+                    |Convert file to URL&nbsp;
+                    i(ng-class="cloudSpinner ? 'icon-spin5 animate-spin' : 'icon-attach' ")
+                input.hidden.form-control.cloud-upload(type='file', ng-change="uploadToCloud()", ng-model='aFile', base-sixty-four-input)
+                //.btn.btn-primary.btn-xs(ng-click="uploadFile()")
+                    |Convert to URL&nbsp;
+                    i.icon-spin5.animate-spin.font12.ng-cloak(ng-show="uploadSpinner")
+                p.mbn.font12
+                    | &nbsp;
+                    | {{cloudUrl}}
+
+                //input.col-md-offset-2#fileup(type="filepicker-dragdrop" data-fp-multiple="false", data-fp-button-class="btn btn-primary btn-xs", data-fp-drag-text="Or drop files here for an embeddable url", onchange="onFilepickerChange")
+
+
+
+                //input(type="filepicker-dragdrop", data-fp-apikey="AbTiwTQQyRk64Q0iOoQHrz", data-fp-mimetypes="*/*", data-fp-container="modal", onchange="alert(event.fpfile.url)")
+
+            .col-md-5.pas
+                input.border-dashed.man.text-center.custombox(ng-model="courseName", style='width:100%', ng-show='courseName')
+                p.mbn.text-center.bg-grey(ng-show='!courseName') Loading course...
+            .col-md-2.pas
+                .pull-right.btn.btn-default.btn-xs(ng-click="showConfig=!showConfig", ng-class="showConfig ? 'btn-primary' : 'btn-default'") Course Config
+
+        #config-column.scrollcolumn.col-md-offset-2.col-md-8.animate.slide-left.pas.brs.bls.ng-cloak(ng-show='showConfig', ng-style="{'min-height' : windowHeight, 'height' : windowHeight}")
+            .course-contents(ng-repeat="(unitKey,unit) in course.units")
+                span.mls.font18.text-dark-gray.cursorp(style='word-break: break-all;') Unit {{$index + 1}}
+                //i.pull-right.cursorp.icon-cancel-circled.font14.text-dark-gray(ng-click='delUnit(unitKey)')
+                .btn.btn-xs.btn-danger.cursorp.icon-cancel-circled.mrs.pull-right.mts(ng-click='delUnit(unitKey)')
+
+                div(ng-if="userBasic.email=='admin@gilders.in'")
+                    .font12.label.mrs.cursorp(ng-click='setInstallment(1, unitKey, unit.installmentNo)', ng-class="unit.installmentNo == 1 ? 'label-primary' : 'label-default' ") Installment 1
+                    .font12.label.mrs.cursorp(ng-click='setInstallment(2, unitKey, unit.installmentNo)', ng-class="unit.installmentNo == 2 ? 'label-primary' : 'label-default' ") Installment 2
+                    .font12.label.mrs.cursorp(ng-click='setInstallment(3, unitKey, unit.installmentNo)', ng-class="unit.installmentNo == 3 ? 'label-primary' : 'label-default' ") Installment 3
+
+
+
+
+                h5.text-6.man.pas(ng-click="editUnitName = unitKey", ng-show="editUnitName != unitKey", style="border-top:1px dotted #ddd; border-bottom:1px dotted #ddd")
+                    | {{unit.name}}
+
+                input.border-dashed.man.text-center.custombox(ng-show="editUnitName == unitKey", ng-model='unit.name', ng-blur='editUnitName="";saveUnitName(unit.name, unitKey)', style='width:100%')
+
+                ul.nav.nav-list.brn.pbn
+                    li(ng-repeat="(lessonKey, lesson) in unit.lessons")
+                        span.font14.text-dark-gray.cursorp(style='word-break: break-all;') Lesson {{$index + 1}}
+                        .btn.btn-xs.btn-danger.cursorp.icon-cancel-circled.mrs.pull-right.mts.mbs(ng-click='delLesson(unitKey, lessonKey)')
+                        h6.font20.text-bold.mtn.text-6.cursorp(style='word-break: break-all;border:1px dotted #ddd;', ng-click="editLessonName = lessonKey", , ng-show="editLessonName != lessonKey") {{lesson.name}}
+                        input.border-dashed.man.text-center.custombox(ng-show="editLessonName == lessonKey", ng-model="lesson.name", ng-blur='editLessonName="";saveLessonName(unitKey, lessonKey, lesson.name)', style='width:100%')
+
+                        ul.nav.nav-list.brn.pbn
+                            li(ng-repeat="(projectKey, project) in lesson.projects", ng-class="projectKey == makeLiActive ? 'active' : ''")
+                                .col-md-12.pan
+                                    .col-md-6.pas
+                                        a.font14.text-dark-gray2.cursorp(style='word-break: break-all;font-weight:400' , ng-show="editProjectName != projectKey", ng-click="openProject(unitKey, lessonKey, projectKey, project.name)")
+                                            | {{$index + 1}}. {{project.name}}
+                                    //i.pull-right.cursorp.icon-cancel-circled.pull-right.font14.text-dark-gray(ng-click='delProject(unitKey, lessonKey, projectKey)')
+                                    .col-md-6.pas
+                                        .btn.btn-xs.icon-link.mrs(ng-click='toggleSubmissions(unitKey, lessonKey, projectKey, project.enableSubmissions)', ng-class="project.enableSubmissions ? 'btn-primary' : 'btn-default' ") Enable Submissions
+                                        .btn.btn-xs.btn-default.cursorp.icon-edit.mrs(ng-click="editProjectName = projectKey")
+                                        .btn.btn-xs.btn-danger.cursorp.icon-cancel-circled.mrs(ng-click='delProject(unitKey, lessonKey, projectKey)')
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                        .btn.btn-xs.cursorp.icon-videocam-1.mrs.contains-tooltip(ng-click="markWalkThrough(unitKey, lessonKey, projectKey)", ng-class="project.isWalkThrough ? 'btn-primary' : 'btn-default'", data-container='body', type="button", data-toggle="tooltip", data-placement="top" ,title="Mark as a walkthrough")
+                                        .btn.btn-xs.cursorp.icon-beaker-1.mrs.contains-tooltip(ng-click="markProject(unitKey, lessonKey, projectKey)", ng-class="project.isProject ? 'btn-primary' : 'btn-default'", data-container='body', type="button", data-toggle="tooltip", data-placement="top" ,title="Mark as a project")
+                                        .btn.btn-xs.cursorp.icon-align-left.mrs.contains-tooltip(ng-click="markText(unitKey, lessonKey, projectKey)", ng-class="project.isText ? 'btn-primary' : 'btn-default'", data-container='body', type="button", data-toggle="tooltip", data-placement="top" ,title="Mark as text")
+
+
+
+                                input.border-dashed.man.text-center.custombox(ng-show="editProjectName == projectKey", ng-model="project.name", ng-blur='editProjectName="";saveProjectName(unitKey, lessonKey, projectKey, project.name)', style='width:100%')
+                            //.btn.btn-default.btn-xs.brn(style='width:100%', ng-click="addProject(unitKey, lessonKey)") New Project
+                            .label.label-default.cursorp(style='width:100%', ng-click="addProject(unitKey, lessonKey)") + New Project
+
+
+
+                .pas
+                    //.btn.btn-default.btn-xs.brn(style='width:100%', ng-click="addLesson(unitKey)") New Lesson
+                    .label.label-default.cursorp(style='width:100%', ng-click="addLesson(unitKey)") + New Lesson
+
+
+
+        #menu-column.scrollcolumn.col-md-3.animate.slide-left.pan(ng-style="{'min-height' : windowHeight, 'height' : windowHeight}", ng-show='!showConfig')
+            .pas
+                .label.label-default.cursorp(style='width:100%', ng-show='course', ng-click="addUnit()") + New Unit
+                i.text-center.col-md-12.icon-spin5.animate-spin(ng-show="creatingUnit")
+                p.text-center(ng-show='!course') Loading course layout...
+
+            .course-contents(ng-repeat="(unitKey,unit) in course.units")
+                span.mls.font18.text-dark-gray.cursorp(style='word-break: break-all;') Unit {{$index + 1}}
+                //i.pull-right.cursorp.icon-cancel-circled.font14.text-dark-gray(ng-click='delUnit(unitKey)')
+
+                //div(ng-if="userBasic.email=='admin@gilders.in'")
+                    .mll.font10.label.mrs.cursorp(ng-click='setInstallment(1, unitKey, unit.installmentNo)', ng-class="unit.installmentNo == 1 ? 'label-primary' : 'label-default' ") Installment 1
+                    .font10.label.mrs.cursorp(ng-click='setInstallment(2, unitKey, unit.installmentNo)', ng-class="unit.installmentNo == 2 ? 'label-primary' : 'label-default' ") Installment 2
+                    .font10.label.mrs.cursorp(ng-click='setInstallment(3, unitKey, unit.installmentNo)', ng-class="unit.installmentNo == 3 ? 'label-primary' : 'label-default' ") Installment 3
+
+
+
+
+                h5.text-6.man.pas(ng-click="editUnitName = unitKey", ng-show="editUnitName != unitKey", style="border-top:1px dotted #ddd; border-bottom:1px dotted #ddd")
+                    | {{unit.name}}
+
+                input.border-dashed.man.text-center.custombox(ng-show="editUnitName == unitKey", ng-model='unit.name', ng-blur='editUnitName="";saveUnitName(unit.name, unitKey)', style='width:100%')
+
+                ul.nav.nav-list.brn.pbn
+                    li(ng-repeat="(lessonKey, lesson) in unit.lessons")
+                        span.font14.text-dark-gray.cursorp(style='word-break: break-all;') Lesson {{$index + 1}}
+                        //i.pull-right.cursorp.icon-cancel-circled.pull-right.font14.text-dark-gray(ng-click='delLesson(unitKey, lessonKey)')
+                        h6.font20.text-bold.mtn.text-6.cursorp(style='word-break: break-all;border:1px dotted #ddd;', ng-click="editLessonName = lessonKey", , ng-show="editLessonName != lessonKey") {{lesson.name}}
+                        input.border-dashed.man.text-center.custombox(ng-show="editLessonName == lessonKey", ng-model="lesson.name", ng-blur='editLessonName="";saveLessonName(unitKey, lessonKey, lesson.name)', style='width:100%')
+
+                        ul.nav.nav-list.brn.pbn
+                            li(ng-repeat="(projectKey, project) in lesson.projects", ng-class="projectKey == makeLiActive ? 'active' : ''")
+                                a.font14.text-dark-gray2.cursorp(style='word-break: break-all;font-weight:400' , ng-show="editProjectName != projectKey", ng-click="openProject(unitKey, lessonKey, projectKey, project.name)")
+                                    i.icon-videocam-1.ng-cloak.text-dark-gray(ng-show="project.isWalkThrough")
+                                    i.icon-beaker-1.ng-cloak.text-dark-gray(ng-show="project.isProject")
+                                    i.icon-align-left.ng-cloak.text-dark-gray(ng-show="project.isText")
+                                    | &nbsp;&nbsp;{{project.name}}
+                                    //| {{$index + 1}}. {{project.name}}
+                                    //i.pull-right.cursorp.icon-cancel-circled.pull-right.font14.text-dark-gray(ng-click='delProject(unitKey, lessonKey, projectKey)')
+                                    //i.pull-right.cursorp.icon-link.pull-right.font14(ng-click='toggleSubmissions(unitKey, lessonKey, projectKey, project.enableSubmissions)', ng-class="project.enableSubmissions ? 'text-info' : 'text-dark-gray' ")
+                                    //i.pull-right.cursorp.icon-edit.pull-right.font14.text-dark-gray(ng-click="editProjectName = projectKey")
+
+                                input.border-dashed.man.text-center.custombox(ng-show="editProjectName == projectKey", ng-model="project.name", ng-blur='editProjectName="";saveProjectName(unitKey, lessonKey, projectKey, project.name)', style='width:100%')
+                            //.btn.btn-default.btn-xs.brn(style='width:100%', ng-click="addProject(unitKey, lessonKey)") New Project
+                            .label.label-default.cursorp(style='width:100%', ng-click="addProject(unitKey, lessonKey)") + New Project
+
+
+
+                .pas
+                    //.btn.btn-default.btn-xs.brn(style='width:100%', ng-click="addLesson(unitKey)") New Lesson
+                    .label.label-default.cursorp(style='width:100%', ng-click="addLesson(unitKey)") + New Lesson
+
+
+
+
+
+        #write-column.scrollcolumn.pas(ng-style="{'min-height' : windowHeight, 'height' : windowHeight}", ng-class="layout ? 'col-md-5 brs bls' : 'col-md-6 brs'", ng-click="checkIfEnabled()", ng-show='!showConfig')
+
+            //input.border-dashed.man.text-center.custombox(ng-model="chapterName", style='width:100%', ng-show='chapterName.length >= 0')
+            textarea.custombox(ng-disabled="writingDisabled",ng-style="{'min-height' : windowHeight, 'height' : windowHeight }", ng-model="content.markdown", ng-keyup="getMarked()",  select-non-editable="true", style='border:0;width:100%')
+        #preview-column.scrollcolumn.col-md-6.pas(ng-style="{'min-height' : windowHeight, 'height' : windowHeight}", ng-class="layout ? 'col-md-4' : 'col-md-6'", ng-show='!showConfig')
+            div(ng-style="{'min-height' : windowHeight, 'height' : windowHeight}", ng-bind-html="content.html", style="word-wrap:break-word")
+
+
+.col-md-12
+    .row

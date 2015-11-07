@@ -1,0 +1,101 @@
+.row.man.pan.courses-tab-option-dashboard
+    .col-md-12.bbs.man.pan.bg-grey-light
+        .col-md-3.man.pan
+            .btn-group.btn-group-xs.mbm.mls.mtm(style="padding-left:-13px", ng-if="coursesTab.currentCourse && !coursesTab.currentCourse.$isDestroyed")
+                button.btn.btn-default.dropdown-toggle.bg-white.text-dark-gray(type="button", data-toggle="dropdown", style="background:#fff;color:#888;border:1px solid #ddd;")
+                    | {{coursesTab.currentCourse.name}}
+                    span.caret
+                ul.dropdown-menu.dropdown-menu.bor(role="menu", style='margin-top:2px;')
+                    li(ng-click="coursesTab.changeCourse(idxcourse)", ng-repeat="(courseId, idxcourse) in coursesTab.coursesIndex", ng-class="coursesTab.currentCourse.$id == idxcourse.$id ? 'active' : ''")
+                        a(href="") {{idxcourse.courseName}}
+                    
+        .col-md-3.man.pan.text-center
+            h6.man.ptm.text-dark-gray(ng-if="coursesTab.currentCourse") {{coursesTab.currentCourse.name}} 
+        .col-md-6.man.pan
+            .btn-xs.btn.mbm.btn-default.mtm.pull-right.mrs(ng-click="coursesTab.addNewCourse()", ng-show="coursesTab.activePane=='Overview'") New Course
+            .btn-xs.btn.mbm.btn-default.mtm.pull-right.mrs(ng-click="coursesTab.deleteCourse()", ng-if="coursesTab.currentCourse && !coursesTab.currentCourse.$isDestroyed", , ng-show="coursesTab.activePane=='Overview'") Delete Course
+            .btn-xs.btn.mbm.mtm.pull-right.mrs(ng-class="coursesTab.activePane == 'Members' ? 'btn-primary': 'btn-default'",ng-click="(coursesTab.activePane=='Members' ? coursesTab.activePane='Overview' : coursesTab.activePane='Members')",ng-if="coursesTab.currentCourse && !coursesTab.currentCourse.$isDestroyed", ng-show="coursesTab.activePane=='Members' || coursesTab.activePane=='Overview'") Members
+            .btn-xs.btn.mbm.mtm.pull-right.mrs(ng-class="coursesTab.activePane == 'Edit' ? 'btn-primary': 'btn-default'",ng-click="(coursesTab.activePane=='Edit' ? coursesTab.activePane='Overview' : coursesTab.activePane='Edit');coursesTab.editTpl='javascripts/app/templates/mentor/edit-course.html'",ng-if="coursesTab.currentCourse && !coursesTab.currentCourse.$isDestroyed", ng-show="coursesTab.activePane=='Edit' || coursesTab.activePane=='Overview'") Edit Course
+            .btn-xs.btn.mbm.btn-default.mtm.pull-right.mrs(ng-click="coursesTab.activePane = 'Overview'", ng-show="coursesTab.activePane=='Overview'", ng-class="coursesTab.activePane == 'Overview' ? 'btn-primary': 'btn-default'") Overview
+            
+.row.man.pan.ng-cloak.animate.slide-down(ng-style="paneStyle", style='overflow:scroll', ng-if="coursesTab.activePane=='Members'")
+    .dialog.dialog-info.mbn(style='border-top:0')
+        .container
+            span Adding members to your courses gives read and write access to them. Only Craftsmen and Master Craftsmen can be added.        
+    table.table.table-striped
+        thead
+            tr
+                th First Name
+                th Last Name
+                th Guild
+                th Level
+                th Access
+        tbody
+            tr(ng-repeat="(memberId, member) in coursesTab.currentCourse.members")
+                td {{memberId}}
+                td ghvg        
+                td ghvg        
+                td ghvg
+                td ghvg
+            tr
+                td ghvg        
+                td ghvg        
+                td ghvg        
+                td ghvg
+                td ghvg
+            tr
+                td ghvg        
+                td ghvg        
+                td ghvg        
+                td ghvg                
+                td ghvg                
+
+.row.man.pan.ng-cloak.animate.slide-down(ng-style="paneStyle", style='overflow:scroll', ng-if="coursesTab.activePane=='Edit'", ng-include="coursesTab.editTpl", ng-controller="EditCourseController", ng-init="bootEdit(coursesTab.currentCourse, coursesTab.unitKey, coursesTab.lessonKey, coursesTab.projectKey, coursesTab.unitIndex, coursesTab.lessonIndex, coursesTab.projectIndex)")
+
+
+.row.man.pan.animate.slide-down(ng-if="coursesTab.activePane == 'Overview'")
+    //- span {{coursesTab.coursesIndex}}
+    //- span {{coursesTab.currentCourse}}
+    .col-md-12.pan.ng-cloak(ng-show= 'coursesTab.currentCourse')
+        .animate.slide-left.col-md-3.brs.pan.scrollcolumn(ng-show= 'coursesTab.currentCourse', ng-style="paneStyle")
+            .row.man.pam.bbs(ng-repeat="(unitKey,unit) in coursesTab.currentCourse.units")
+                span.mls.font18.text-dark-gray(style='word-break: break-all;') Unit {{$index + 1}}
+                h6.text-bold.text-dark-gray2.man.pas
+                    | {{unit.name}}
+                ul.nav.nav-list.brn.pbn
+                    li(ng-repeat="(lessonKey, lesson) in unit.lessons")
+                        span.font14.text-dark-gray(style='word-break: break-all;') Lesson {{$index + 1}}
+                        h6.font20.text-bold.mtn.text-dark-gray2(style='word-break: break-all;') {{lesson.name}}
+                        ul.nav.nav-list.brn.pbn
+                            li(ng-repeat="(projectKey, project) in lesson.projects", ng-class="coursesTab.projectKey == projectKey ? 'active' : ''", ng-init="!coursesTab.projectKey ? coursesTab.changeProject(unitKey, lessonKey, projectKey, $parent.$parent.$index, $parent.$index, $index) : ''")
+                                a.font14.text-dark-gray2.cursorp(style='word-break: break-all;font-weight:400' , ng-click="coursesTab.changeProject(unitKey, lessonKey, projectKey, $parent.$parent.$index, $parent.$index, $index)")
+                                    | {{$index + 1}}. {{project.name}}
+                                    
+
+        .pan.animate.slide-left.col-md-9(ng-style="paneStyle", ng-show="coursesTab.coursesIndex.length > 0")
+            .col-md-12.pal
+                .col-md-9.pan
+                    span.text-dark-gray.font14(ng-show='coursesTab.currentCourse') Unit {{coursesTab.unitIndex + 1}} / Lesson {{coursesTab.lessonIndex + 1}} / Project {{coursesTab.projectIndex + 1}}
+                    h2.text-dark-gray2.pan.man {{coursesTab.currentCourse.units[coursesTab.unitKey].lessons[coursesTab.lessonKey].projects[coursesTab.projectKey].name || 'Loading project...'}}
+
+
+                .col-md-12.pal.animate.slide-down(ng-bind-html="coursesTab.projectHtml", ng-show= 'coursesTab.currentCourse')
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,74 @@
+.row.man.pan.courses-tab-option-dashboard
+    .col-md-12.bbs.man.pan.bg-grey-light
+        .col-md-3.man.pan
+            .btn-group.btn-group-xs.mbm.mls.mtm(style="padding-left:-13px", ng-if="guildsTab.currentGuild")
+                button.btn.btn-default.dropdown-toggle.bg-white.text-dark-gray(type="button", data-toggle="dropdown", style="background:#fff;color:#888;border:1px solid #ddd;")
+                    | {{guildsTab.currentGuild.guildName}} 
+                    span.caret
+                ul.dropdown-menu.dropdown-menu.bor(role="menu", style='margin-top:2px;')
+                    li(ng-click="guildsTab.changeGuild(idxguild)", ng-repeat="(guildId, idxguild) in guildsTab.guildsIndex", ng-class="guildsTab.currentGuild.$id == idxguild.$id ? 'active' : ''")
+                        a(href="") {{idxguild.guildName}}
+                    
+        .col-md-3.man.pan.text-center
+            h6.man.ptm.text-dark-gray(ng-if="guildsTab.currentGuild") {{guildsTab.currentGuild.guildName}} 
+        .col-md-6.man.pan
+            .btn-xs.btn.mbm.btn-default.mtm.pull-right.mrs(ng-click="guildsTab.createGuild()", ng-show="guildsTab.activePane=='Overview'") New Guild
+            .btn-xs.btn.mbm.btn-default.mtm.pull-right.mrs(ng-click="coursesTab.deleteCourse()", ng-if="guildsTab.currentGuild  && !guildsTab.currentGuild.$isDestroyed", ng-show="guildsTab.activePane=='Overview'") New Batch
+            .btn-xs.btn.mbm.mtm.pull-right.mrs(ng-click="coursesTab.deleteCourse()", ng-if="guildsTab.currentGuild && !guildsTab.currentGuild.$isDestroyed", ng-show="guildsTab.activePane=='Members' || guildsTab.activePane=='Overview'", ng-class="guildsTab.activePane == 'Members' ? 'btn-primary' : 'btn-default'") Members
+            .btn-xs.btn.mbm.mtm.pull-right.mrs(ng-click="coursesTab.deleteCourse()", ng-if="guildsTab.currentGuild && !guildsTab.currentGuild.$isDestroyed", ng-show="guildsTab.activePane=='Finished' || guildsTab.activePane=='Overview'", ng-class="guildsTab.activePane == 'Finished' ? 'btn-primary' : 'btn-default'") Finished Batches
+            .btn-xs.btn.mbm.mtm.pull-right.mrs(ng-click="coursesTab.deleteCourse()", ng-if="guildsTab.currentGuild && !guildsTab.currentGuild.$isDestroyed", ng-show="guildsTab.activePane=='Current' || guildsTab.activePane=='Overview'", ng-class="guildsTab.activePane == 'Current' ? 'btn-primary' : 'btn-default'") Current Batches
+            .btn-xs.btn.mbm.mtm.pull-right.mrs(ng-click="coursesTab.deleteCourse()", ng-if="guildsTab.currentGuild && !guildsTab.currentGuild.$isDestroyed", ng-show="guildsTab.activePane=='Overview'", ng-class="guildsTab.activePane == 'Overview' ? 'btn-primary' : 'btn-default'") Overview
+
+            
+.row.man.pan.ng-cloak.animate.slide-down(ng-style="paneStyle", style='overflow:scroll', ng-if="guildsTab.currentGuild && !guildsTab.currentGuild.$isDestroyed")
+
+
+//- .row.man.pan.animate.slide-down(ng-if="guildsTab.currentGuild")
+        .animate.slide-left.col-md-3.brs.pan.scrollcolumn(ng-show= 'coursesTab.currentCourse', ng-style="paneStyle")
+            .row.man.pam.bbs(ng-repeat="(unitKey,unit) in coursesTab.currentCourse.units")
+                span.mls.font18.text-dark-gray(style='word-break: break-all;') Unit {{$index + 1}}
+                h6.text-bold.text-dark-gray2.man.pas
+                    | {{unit.name}}
+                ul.nav.nav-list.brn.pbn
+                    li(ng-repeat="(lessonKey, lesson) in unit.lessons")
+                        span.font14.text-dark-gray(style='word-break: break-all;') Lesson {{$index + 1}}
+                        h6.font20.text-bold.mtn.text-dark-gray2(style='word-break: break-all;') {{lesson.name}}
+                        ul.nav.nav-list.brn.pbn
+                            li(ng-repeat="(projectKey, project) in lesson.projects", ng-class="coursesTab.projectKey == projectKey ? 'active' : ''", ng-init="!coursesTab.projectKey ? coursesTab.changeProject(unitKey, lessonKey, projectKey, $parent.$parent.$index, $parent.$index, $index) : ''")
+                                a.font14.text-dark-gray2.cursorp(style='word-break: break-all;font-weight:400' , ng-click="coursesTab.changeProject(unitKey, lessonKey, projectKey, $parent.$parent.$index, $parent.$index, $index)")
+                                    | {{$index + 1}}. {{project.name}}
+                                    
+
+        .pan.animate.slide-left(ng-style="paneStyle", ng-class="coursesTab.currentCourse ? 'col-md-9': 'col-md-12' ", ng-show= 'coursesTab.projectKey' )
+            .col-md-12.pal
+                .row.man.pan
+                    .col-md-9.pan
+                        span.text-dark-gray.font14(ng-show='coursesTab.currentCourse') Unit {{coursesTab.unitIndex + 1}} / Lesson {{coursesTab.lessonIndex + 1}} / Project {{coursesTab.projectIndex + 1}}
+                        //- i.icon-videocam-1.ng-cloak.text-dark-gray(ng-show="project.isWalkThrough")
+                        //- i.icon-beaker-1.ng-cloak.text-dark-gray(ng-show="project.isProject")
+                        //- i.icon-align-left.ng-cloak.text-dark-gray(ng-show="project.isText")
+
+                        h2.text-dark-gray2.pan.man {{coursesTab.currentCourse.units[coursesTab.unitKey].lessons[coursesTab.lessonKey].projects[coursesTab.projectKey].name || 'Loading project...'}}
+                hr
+
+
+                .col-md-12.pal.animate.slide-down(ng-bind-html="coursesTab.projectHtml", ng-show= 'coursesTab.currentCourse')
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

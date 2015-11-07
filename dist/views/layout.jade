@@ -41,9 +41,9 @@ html
       script(src="javascripts/vendor/html5shiv.js")
       script(src="javascripts/vendor/respond.min.js")
 
-  // - if(minifiedSource)
+  - if(minifiedSource)
     script(src='/javascripts/vendor/requirejs/require.js', data-main='/builtExternal/applicationExternal.js')
-  // - else
+  - else
     script(src='/javascripts/buildExternal.js')
     script(src='/javascripts/vendor/requirejs/require.js', data-main='mainExternal.js')
 
