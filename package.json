@@ -15,6 +15,7 @@
     "jade": "1.5.0",
     "moment": "^2.10.6",
     "multer": "^1.1.0",
+    "requirejs": "^2.1.20",
     "serve-favicon": "2.0.1",
     "underscore": "^1.8.3"
   },
