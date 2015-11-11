@@ -30,7 +30,8 @@ define ['externalApp/base','angularjs', 'fbase'], (AngApp) ->
 
       $scope.upload = (file) ->
         Upload.upload(
-          url: 'http://localhost:3000/upload'
+          # url: 'http://localhost:3000/upload'
+          url: 'http://mosaiced.nodelabs.in/upload'
           data:
             file: file)
         .progress((evt) ->
