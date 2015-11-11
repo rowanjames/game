@@ -11,32 +11,6 @@ multer  = require('multer')
 upload = multer({ dest: 'uploads/' })
 # https://www.wonderplugin.com/wp-content/plugins/wonderplugin-lightbox/images/demo-image0.jpg
 # gm('assets/stylesheets/Icons/PNG/android1.png').size (err, value) ->
-gm('original1.jpg').size (err, value) ->
-  console.log value
-  if value.width > 700 or value.height > 550
-    gm('original1.jpg')
-    .resize(700, 550)
-    .transparent('white')
-    .quality(100)
-    .gravity('Center')
-    .extent(700, 550)
-    .noProfile()
-    .write 'resize.png', (err) ->
-      console.log err
-      if !err
-        console.log 'done'
-  else    
-    gm('original1.jpg')
-    .thumbnail(value.width, value.height)
-    .transparent('white')
-    .quality(100)
-    .gravity('Center')
-    .extent(700, 550)
-    .noProfile()
-    .write 'resize.png', (err) ->
-      console.log err
-      if !err
-        console.log 'done'
 
 exports.startServer = (config, callback) ->
   app = express()
