@@ -17,6 +17,11 @@ require =
     sanitize: 'vendor/angular-sanitize'
     afire: 'vendor/afire'
     picker: 'vendor/filepicker'
+    pica: 'vendor/pica'
+    exif: 'vendor/angular-canvas-ext/exif.min'
+    mega: 'vendor/angular-canvas-ext/megapix-image.min'
+    ext: 'vendor/angular-canvas-ext/angular-canvas-ext.min'
+    ngupload: 'vendor/ng-file-upload'
 
   shim:
     angularjs:
@@ -40,7 +45,13 @@ require =
       deps: ['angularjs']
       exports: 'angular'
     picker:
-      exports: 'filepicker'  
+      exports: 'filepicker'
+    pica:
+      exports: 'pica' 
+    ext: 
+      deps: ['angularjs','exif', 'mega']     
+    ngupload:
+      deps: ['angularjs']  
 
 
 

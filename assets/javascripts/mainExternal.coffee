@@ -4,7 +4,7 @@ require ['angularjs', 'fbase', 'externalApp/base',
          'externalApp/controllers/signin_controller',
          'externalApp/controllers/nav_controller',
          'externalApp/controllers/external_controller',
-         'externalApp/services/firebase_service', 'jquery', 'picker'
+         'externalApp/services/firebase_service', 'jquery', 'picker',
          'flatUi', 'vendor/underscore', 'moment'], (angular, Firebase, GildersApp ,
                                           SignupController, SignupMentorsController,SigninController, NavBarController,ExternalController,
                                            FirebaseService,

@@ -489,3 +489,7 @@ overflow: -moz-scrollbars-none;
     color: #5FC8D7;
 }
 
+
+.dragover-class {
+    background-color: #eee;
+}

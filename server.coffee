@@ -5,6 +5,38 @@ compression = require 'compression'
 favicon = require 'serve-favicon'
 cookieParser = require 'cookie-parser'
 errorHandler = require 'errorhandler'
+gm = require('gm')
+fs = require('fs')
+multer  = require('multer')
+upload = multer({ dest: 'uploads/' })
+# https://www.wonderplugin.com/wp-content/plugins/wonderplugin-lightbox/images/demo-image0.jpg
+# gm('assets/stylesheets/Icons/PNG/android1.png').size (err, value) ->
+gm('original1.jpg').size (err, value) ->
+  console.log value
+  if value.width > 700 or value.height > 550
+    gm('original1.jpg')
+    .resize(700, 550)
+    .transparent('white')
+    .quality(100)
+    .gravity('Center')
+    .extent(700, 550)
+    .noProfile()
+    .write 'resize.png', (err) ->
+      console.log err
+      if !err
+        console.log 'done'
+  else    
+    gm('original1.jpg')
+    .thumbnail(value.width, value.height)
+    .transparent('white')
+    .quality(100)
+    .gravity('Center')
+    .extent(700, 550)
+    .noProfile()
+    .write 'resize.png', (err) ->
+      console.log err
+      if !err
+        console.log 'done'
 
 exports.startServer = (config, callback) ->
   app = express()
@@ -19,6 +51,7 @@ exports.startServer = (config, callback) ->
   app.set 'view engine', config.server.views.extension
   app.set 'port', process.env.PORT || config.server.port || 3000
   # app.set 'port', 3002
+  app.use(express.static(__dirname + '/uploads'));
 
   # middleware
   app.use compression()
@@ -43,7 +76,59 @@ exports.startServer = (config, callback) ->
 
   router.get '/app', (req, res) ->
     res.render 'app', routeOptions  
-    
+
+  # router.post '/upload', (req, res, next) ->
+  #   handler = multer(dest: './cloud/cloud', onFileUploadComplete: (file) ->
+  #     res.json
+  #       path: file.path.replace('cloud/', '')
+  #   )
+  #   handler req, res, next
+      
+  router.post '/upload', upload.single('file'), (req, res, next) ->
+    console.log req.file 
+    tmp_path = req.file.path
+    target_path = 'uploads/' + req.file.originalname
+    src = fs.createReadStream(tmp_path)
+    dest = fs.createWriteStream(target_path)
+    src.on 'end', ->
+      
+      gm('uploads/' + req.file.originalname).size (err, value) ->
+        console.log value
+        if value.width > 700 or value.height > 550
+          gm('uploads/' + req.file.originalname)
+          .resize(700, 550)
+          .transparent('white')
+          .quality(100)
+          .gravity('Center')
+          .extent(700, 550)
+          .noProfile()
+          .write 'uploads/' + 'mod_' + req.file.originalname, (err) ->
+            console.log err
+            if !err
+              console.log 'done'
+              fullUrl = req.protocol + '://' + req.get('host')
+              console.log fullUrl
+              res.json {success: true, url: fullUrl + '/mod_' + req.file.originalname}
+        else    
+          gm('uploads/' + req.file.originalname)
+          .thumbnail(value.width, value.height)
+          .transparent('white')
+          .quality(100)
+          .gravity('Center')
+          .extent(700, 550)
+          .noProfile()
+          .write 'uploads/' + 'mod_' + req.file.originalname, (err) ->
+            console.log err
+            if !err
+              console.log 'done'
+              fullUrl = req.protocol + '://' + req.get('host')
+              console.log fullUrl
+              res.json {success: true, url: url: fullUrl + '/mod_' + req.file.originalname}
+      return
+    src.on 'error', (err) ->
+      res.json {error: true}
+      return
+    src.pipe(dest)  
 
   # routes
   app.use '/', router

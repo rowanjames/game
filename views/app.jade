@@ -31,6 +31,8 @@ block content
                         img(src="stylesheets/stylesheets/ball/1/svg/pantone.svg" alt="" width='40px')
                         | &nbsp;Create a Game
                     .col-md-8.pan
+                        //- input(type="file" ap-file-src="src")
+                        //- canvas(width="700" height="550" ap-canvas src="src" image="image" zoomable="zoomable" frame="frame" scale="scale" offset="offset")
                         form(name="createGameForm")
                             .form-group.has-feedback
                                 input.form-control.bor(name= 'gameName', type='text', placeholder='Name for the game', ng-required="true", ng-minlength='3', ng-model="user.firstName")
@@ -59,21 +61,55 @@ block content
                         | &nbsp;Upload Background Image
 
                     .col-md-12.pan(ng-show='showDropPane')    
-                        .col-md-8.pal.text-center.bg-white#drop-pane(style='border:2px dashed #ddd')
-                            h5.text-dark-gray Drag to select an image
+                        .col-md-8.pal.text-center.bg-white#drop-pane(style='border:2px dashed #ddd', ngf-drop, ngf-select, ng-model="createFile", ngf-drag-over-class='dragover-class', ngf-multiple="false", accept="image/*")
+                            h5.text-dark-gray Click to select an image
                         .col-md-8.pan.progress.brn.mbn.mtl#progress-attachments-wrap
                             .progress-bar#progress-attachments    
                     .col-md-8.animate.slide-down.ng-cloak(ng-show="showImagePreview")        
-                        img.img-responsive(ng-src="{{previewUrl}}")
+                        img#imagePreview(ng-src="{{previewUrl}}", style='width:700px;height:550px')
+                        i.icon-trash.text-danger.cursorp(ng-click="removeImagePreview()")    
                         
 
                     .col-md-12.pan                                            
-                        .btn.btn-primary.mtl(ng-click='toggleCreatePane(1)')
+                        .btn.btn-primary.mtl(ng-click='toggleCreatePane(2)')
                             | Next            
                             i.icon-down
                         .btn.btn-default.btn-xs.pull-right.mtl(ng-click='toggleCreatePane(2)')
                             | Back            
                             i.icon-up
+
+
+
+
+
+                .col-md-10.bg-grey-light.pal.animate.slide-down.ng-cloak(ng-show='createPaneThree')
+                    h5.text-dark-gray2 
+                        img(src="stylesheets/stylesheets/ball/1/svg/pantone.svg" alt="" width='40px')
+                        | &nbsp;Game 1  -  Category 1
+
+                    //- .col-md-8.animate.slide-down.ng-cloak(ng-style="createImageStyle", style='position:relative')        
+                    .col-md-8.animate.slide-down.man.pan#previewCanvasWrap(style='position:relative')        
+                        span(ng-bind-html='dotHtml', style='position:absolute')
+                        .col-md-10.pas.bg-white.bor(style='position:absolute', ng-style='createQuestionBoxStyle', ng-show="createQuestionBoxStyle")    
+                            .col-md-8.pan.man
+                                input.man.pan.form-control.input-sm(type='text')    
+                            .col-md-2.pas    
+                                .btn.btn-xs.btn-primary Add
+                            .col-md-2.pas    
+                                .btn.btn-xs.btn-danger Remove
+                        canvas#previewCanvas(ng-click="previewCanvasClick($event)", width="700" height="550" ap-canvas src="previewUrl" image="image" zoomable="false" frame="frame" scale="scale" offset="offset")
+                        //- .col-md-12.pan.man(style='position:absolute;top:0;height:100%;background:#eee;opacity:0.2')
+
+                        
+
+                    .col-md-12.pan                                            
+                        .btn.btn-primary.mtl(ng-click='toggleCreatePane(2)')
+                            | Next            
+                            i.icon-down
+                        .btn.btn-default.btn-xs.pull-right.mtl(ng-click='toggleCreatePane(3)')
+                            | Back            
+                            i.icon-up                                
+
 
 
         .col-md-12.man.pan.ng-cloak.animate.slide-right.bor(ng-show="showPlayPane")                
