@@ -23,8 +23,8 @@ exports.startServer = (config, callback) ->
   app.set 'views', config.server.views.path
   app.engine config.server.views.extension, engines[config.server.views.compileWith]
   app.set 'view engine', config.server.views.extension
-  # app.set 'port', process.env.PORT || config.server.port || 3000
-  app.set 'port', 80
+  app.set 'port', process.env.PORT || config.server.port || 3000
+  # app.set 'port', 3002
   app.use(express.static(__dirname + '/uploads'));
 
   # middleware
@@ -97,7 +97,7 @@ exports.startServer = (config, callback) ->
               console.log 'done'
               fullUrl = req.protocol + '://' + req.get('host')
               console.log fullUrl
-              res.json {success: true, url: url: fullUrl + '/mod_' + req.file.originalname}
+              res.json {success: true, url: fullUrl + '/mod_' + req.file.originalname}
       return
     src.on 'error', (err) ->
       res.json {error: true}

@@ -213,6 +213,10 @@
     cursor: pointer;
 }
 
+.cursord {
+    cursor: default;
+}
+
 .scrollcolumn {
     overflow-y: scroll;
 }

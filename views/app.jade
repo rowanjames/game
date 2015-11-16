@@ -2,6 +2,8 @@
 extends app_layout
 
 block content
+
+
     .row.man.pan(ng-controller='ExternalController', ng-style='appStyle')
         .row.man.pan
             .col-md-12.man.pas.top-bar-menu
@@ -12,70 +14,65 @@ block content
             .col-xs-2.man.pan(ng-style='paneStyle')
                 .col-md-12.pan
                     h6.man.pan(style='font-size:16px')
-                        i.icon-circle.text-primary
+                        i.icon-circle(ng-class="stepStates.stepOne ? 'text-primary' : 'text-default'")
                         span.text-dark-gray Step 1    
                 .col-md-12.pan.bls.mlm(ng-style="stepStyle")
                 .col-md-12.pan
                     h6.man.pan(style='font-size:16px')
-                        i.icon-circle.text-primary
+                        i.icon-circle(ng-class="stepStates.stepTwo ? 'text-primary' : 'text-dark-gray'")
                         span.text-dark-gray Step 2    
                 .col-md-12.pan.bls.mlm(ng-style="stepStyle")
                 .col-md-12.pan
                     h6.man.pan(style='font-size:16px')
-                        i.icon-circle.text-primary
+                        i.icon-circle(ng-class="stepStates.stepThree ? 'text-primary' : 'text-dark-gray'")
                         span.text-dark-gray Step 3
                 
 
             .col-xs-10.man.pal
-                .col-md-10.bg-grey-light.pal.animate.slide-down.ng-cloak(ng-show='createPaneOne')
+                .col-md-10.bg-grey-light.pal.animate.slide-down.ng-cloak(ng-show="activeCreatePane=='start'")
                     h5.text-dark-gray2 
                         img(src="stylesheets/stylesheets/ball/1/svg/pantone.svg" alt="" width='40px')
                         | &nbsp;Create a Game
                     .col-md-8.pan
-                        //- input(type="file" ap-file-src="src")
-                        //- canvas(width="700" height="550" ap-canvas src="src" image="image" zoomable="zoomable" frame="frame" scale="scale" offset="offset")
                         form(name="createGameForm")
                             .form-group.has-feedback
-                                input.form-control.bor(name= 'gameName', type='text', placeholder='Name for the game', ng-required="true", ng-minlength='3', ng-model="user.firstName")
-                                span.form-control-feedback(ng-class="createGameForm.gameName.$valid ? 'icon-ok-circled  text-success' : 'icon-left-circled text-muted' ")
+                                input.form-control.bor(name= 'createGameInput', type='text', placeholder='Name for the game', ng-required="true", ng-minlength='3', ng-model="createGameName")
+                                span.form-control-feedback(ng-class="createGameForm.createGameInput.$valid ? 'icon-ok-circled  text-success' : 'icon-left-circled text-muted' ")
                             .btn-group.btn-group.mtm(style="padding-left:-13px")
                                 button.btn.btn-default.dropdown-toggle.bg-white.text-dark-gray(type="button", data-toggle="dropdown", style="background:#fff;color:#888;border:1px solid #ddd;")
-                                    | Select a Category
+                                    | {{activeCreateCategory.name || 'Select a Category'}}
                                     span.caret
                                 ul.dropdown-menu.dropdown-menu.bor(role="menu", style='margin-top:2px;')
-                                    li
-                                        a Category 1
-                                    li
-                                        a Category 2
-                                    li
-                                        a Category 3        
+                                    li(ng-repeat="category in gamesIndex", ng-click="changeCreateCategory(category)")
+                                        a {{category.name}}
+                                    
 
                     .col-md-12.pan                                            
-                        .btn.btn-primary.mtl(ng-click='toggleCreatePane(1)')
+                        .btn.btn-primary.mtl(ng-click="nextCreatePane('start')")
                             | Next            
                             i.icon-down
                         
 
-                .col-md-10.bg-grey-light.pal.animate.slide-down.ng-cloak(ng-show='createPaneTwo')
+                .col-md-10.bg-grey-light.pal.animate.slide-down.ng-cloak(ng-show="activeCreatePane=='upload'")
                     h5.text-dark-gray2 
                         img(src="stylesheets/stylesheets/ball/1/svg/pantone.svg" alt="" width='40px')
                         | &nbsp;Upload Background Image
 
-                    .col-md-12.pan(ng-show='showDropPane')    
-                        .col-md-8.pal.text-center.bg-white#drop-pane(style='border:2px dashed #ddd', ngf-drop, ngf-select, ng-model="createFile", ngf-drag-over-class='dragover-class', ngf-multiple="false", accept="image/*")
+                    .col-md-12.pan(ng-show='!createGameSync.image')    
+                        .col-md-8.pal.text-center.bg-white.cursorp#drop-pane(style='border:2px dashed #ddd', ngf-drop, ngf-select, ng-model="createFile", ngf-drag-over-class='dragover-class', ngf-multiple="false", accept="image/*")
                             h5.text-dark-gray Click to select an image
                         .col-md-8.pan.progress.brn.mbn.mtl#progress-attachments-wrap
-                            .progress-bar#progress-attachments    
-                    .col-md-8.animate.slide-down.ng-cloak(ng-show="showImagePreview")        
-                        img#imagePreview(ng-src="{{previewUrl}}", style='width:700px;height:550px')
+                            .progress-bar#progress-attachments(ng-style='progressStyle')    
+                    .col-md-8.animate.slide-down.ng-cloak(ng-show="createGameSync.image")        
+                        img#imagePreview(ng-src="{{createGameSync.image}}", style='width:700px;height:550px')
                         i.icon-trash.text-danger.cursorp(ng-click="removeImagePreview()")    
                         
 
                     .col-md-12.pan                                            
-                        .btn.btn-primary.mtl(ng-click='toggleCreatePane(2)')
+                        .btn.btn-primary.mtl(ng-click="nextCreatePane('upload')")
                             | Next            
                             i.icon-down
-                        .btn.btn-default.btn-xs.pull-right.mtl(ng-click='toggleCreatePane(2)')
+                        .btn.btn-default.btn-xs.pull-right.mtl(ng-click="prevCreatePane('upload')")
                             | Back            
                             i.icon-up
 
@@ -83,38 +80,242 @@ block content
 
 
 
-                .col-md-10.bg-grey-light.pal.animate.slide-down.ng-cloak(ng-show='createPaneThree')
+                .col-md-10.bg-grey-light.pal.animate.slide-down.ng-cloak(ng-show="activeCreatePane=='mark'")
                     h5.text-dark-gray2 
                         img(src="stylesheets/stylesheets/ball/1/svg/pantone.svg" alt="" width='40px')
                         | &nbsp;Game 1  -  Category 1
 
                     //- .col-md-8.animate.slide-down.ng-cloak(ng-style="createImageStyle", style='position:relative')        
                     .col-md-8.animate.slide-down.man.pan#previewCanvasWrap(style='position:relative')        
-                        span(ng-bind-html='dotHtml', style='position:absolute')
-                        .col-md-10.pas.bg-white.bor(style='position:absolute', ng-style='createQuestionBoxStyle', ng-show="createQuestionBoxStyle")    
+                        //- span(compile='dotHtml', style='position:absolute')
+                        span(style='position:absolute')
+                            i.icon-circle.text-warning.cursorp(ng-repeat="(dotId, dot) in createGameDots", ng-click="changeDot(dot)", style="position:absolute;top:{{dot.y}}px;left:{{dot.x}}px")
+
+                        .col-md-10.pts.pls.bg-white.bor(style='position:absolute', ng-style='createQuestionBoxStyle', ng-show="createQuestionBoxStyle")    
                             .col-md-8.pan.man
-                                input.man.pan.form-control.input-sm(type='text')    
-                            .col-md-2.pas    
-                                .btn.btn-xs.btn-primary Add
-                            .col-md-2.pas    
-                                .btn.btn-xs.btn-danger Remove
-                        canvas#previewCanvas(ng-click="previewCanvasClick($event)", width="700" height="550" ap-canvas src="previewUrl" image="image" zoomable="false" frame="frame" scale="scale" offset="offset")
+                                input.man.form-control.input-sm(type='text', ng-required='true', ng-model='createGameQuestion')    
+                            .col-md-4.pas    
+                                .btn.btn-xs.btn-primary.mrs(ng-click="addQuestion()") Add
+                                .btn.btn-xs.btn-danger(ng-click="removeQuestion()") Remove
+                                
+                        //- canvas#previewCanvas(ng-click="previewCanvasClick($event)", width="700" height="550" ap-canvas src="previewUrl" image="image" zoomable="false" frame="frame" scale="scale" offset="offset")
+                        img#previewCanvas(ng-click="previewCanvasClick($event)", width="700" height="550" ng-src="{{createGameSync.image}}")
                         //- .col-md-12.pan.man(style='position:absolute;top:0;height:100%;background:#eee;opacity:0.2')
 
                         
 
                     .col-md-12.pan                                            
-                        .btn.btn-primary.mtl(ng-click='toggleCreatePane(2)')
+                        .btn.btn-primary.mtl(ng-click="nextCreatePane('mark')")
                             | Next            
                             i.icon-down
-                        .btn.btn-default.btn-xs.pull-right.mtl(ng-click='toggleCreatePane(3)')
+                        .btn.btn-default.btn-xs.pull-right.mtl(ng-click="prevCreatePane('mark')")
                             | Back            
-                            i.icon-up                                
+                            i.icon-up  
 
 
 
-        .col-md-12.man.pan.ng-cloak.animate.slide-right.bor(ng-show="showPlayPane")                
-            h1 Play
+                .col-md-10.bg-grey-light.pal.animate.slide-down.ng-cloak(ng-show="activeCreatePane=='settings'")
+                    h5.text-dark-gray2.mbn 
+                        img(src="stylesheets/stylesheets/ball/1/svg/pantone.svg" alt="" width='40px')
+                        | &nbsp;{{activeCreateCategory.name}} - {{createGameName}}  -  Settings
+                        .col-md-2.pull-right
+                            img(ng-src="{{createGameSync.image}}", style="width:100%")
+                    //- h6.text-dark-gray.mll.pll.mtn.mrn.mbn.prn.ptn.pbn &nbsp;{{createGameSync.dots.length}} Questions                    
+
+                    .col-md-12.mtl
+                        .col-md-6
+                            p.text-bold How many chances does a player get?
+                            .btn-group.btn-group.mtm(style="padding-left:-13px")
+                                button.btn.btn-default.dropdown-toggle.bg-white.text-dark-gray(type="button", data-toggle="dropdown", style="background:#fff;color:#888;border:1px solid #ddd;")
+                                    | {{createGameSync.settings.chances.text || 'Choose one'}} 
+                                    span.caret
+                                ul.dropdown-menu.dropdown-menu.bor(role="menu", style='margin-top:2px;')
+                                    li(ng-click="setCreateOptions('chances', 'asMany', 'As many as there are questions')")
+                                        a As many as there are questions
+                                    li(ng-click="setCreateOptions('chances', 'firstWrong', 'Game ends on 1st wrong answer')")
+                                        a Game ends on 1st wrong answer
+                                    li(ng-click="setCreateOptions('chances', 'secondWrong', 'Game ends on 2nd wrong answer')")
+                                        a Game ends on 2nd wrong answer
+                                    li(ng-click="setCreateOptions('chances', 'thirdWrong', 'Game ends on 3rd wrong answer')")
+                                        a Game ends on 3rd wrong answer    
+                                    li(ng-click="setCreateOptions('chances', 'allCorrect', 'Game ends when player gets all correct')")
+                                        a Game ends when player gets all correct    
+                        
+                        .col-md-6
+                            p.text-bold Game playing timer
+                            .btn-group.btn-group.mtm(style="padding-left:-13px")
+                                button.btn.btn-default.dropdown-toggle.bg-white.text-dark-gray(type="button", data-toggle="dropdown", style="background:#fff;color:#888;border:1px solid #ddd;")
+                                    | {{createGameSync.settings.timer.text || 'Choose one'}} 
+                                    span.caret
+                                ul.dropdown-menu.dropdown-menu.bor(role="menu", style='margin-top:2px;')
+                                    li(ng-click="setCreateOptions('timer', '10000', '00:10 min (10 seconds, min)')")
+                                        a 00:10 min (10 seconds, min)
+                                    li(ng-click="setCreateOptions('timer', '20000', '00:20 min')")
+                                        a 00:20 min
+                                    li(ng-click="setCreateOptions('timer', '30000', '00:30 min')")
+                                        a 00:30 min
+                                    li(ng-click="setCreateOptions('timer', '40000', '00:40 min')")
+                                        a 00:40 min
+                                    li(ng-click="setCreateOptions('timer', '50000', '00:50 min')")
+                                        a 00:50 min            
+                                    li(ng-click="setCreateOptions('timer', '60000', '01:00 min (1 minute)')")
+                                        a 01:00 min (1 minute)                
+                                    li(ng-click="setCreateOptions('timer', '90000', '01:30 min')")
+                                        a 01:30 min 
+                                    li(ng-click="setCreateOptions('timer', '120000', '02:00 min')")
+                                        a 02:00 min     
+                                    li(ng-click="setCreateOptions('timer', '180000', '03:00 min')")
+                                        a 03:00 min     
+                                    li(ng-click="setCreateOptions('timer', '240000', '04:00 min')")
+                                        a 04:00 min     
+                                    li(ng-click="setCreateOptions('timer', '300000', '05:00 min (5 minutes)')")
+                                        a 05:00 min (5 minutes)                    
+                                    li(ng-click="setCreateOptions('timer', '360000', '06:00 min')")
+                                        a 06:00 min     
+                                    li(ng-click="setCreateOptions('timer', '420000', '07:00 min')")
+                                        a 07:00 min     
+                                    li(ng-click="setCreateOptions('timer', '480000', '08:00 min')")
+                                        a 08:00 min     
+                                    li(ng-click="setCreateOptions('timer', '540000', '09:00 min')")
+                                        a 09:00 min     
+                                    li(ng-click="setCreateOptions('timer', '600000', '10:00 min')")
+                                        a 10:00 min (10 minutes)                
+
+                                    li(ng-click="setCreateOptions('timer', '660000', '11:00 min')")
+                                        a 11:00 min     
+                                    li(ng-click="setCreateOptions('timer', '720000', '12:00 min') ")
+                                        a 12:00 min     
+                                    li(ng-click="setCreateOptions('timer', '780000', '13:00 min')")
+                                        a 13:00 min     
+                                    li(ng-click="setCreateOptions('timer', '840000', '14:00 min')")
+                                        a 14:00 min     
+                                    li(ng-click="setCreateOptions('timer', '900000', '15:00 min (15 minutes)')")
+                                        a 15:00 min (15 minutes)                    
+                                    li(ng-click="setCreateOptions('timer', '1200000', '20:00 min')")
+                                        a 20:00 min     
+                                    li(ng-click="setCreateOptions('timer', '1800000', '30:00 min')")
+                                        a 30:00 min     
+                                    li(ng-click="setCreateOptions('timer', '2700000', '45:00 min')")
+                                        a 45:00 min     
+                                    li(ng-click="setCreateOptions('timer', '3600000', '60:00 min (1 hour, max)')")
+                                        a 60:00 min (1 hour, max)                                                                                        
+                                
+
+                    
+                    .col-md-12.pan                                            
+                        .btn.btn-primary.mtl(ng-click='finishCreate()')
+                            | Done
+                        .btn.btn-default.btn-xs.pull-right.mtl(ng-click="prevCreatePane('settings')")
+                            | Back            
+                            i.icon-up                        
+
+
+
+        .col-md-12.man.pan.animate.slide-right(ng-show="showPlayPane")                
+            
+            .col-xs-12.man.pal
+                .col-md-12.bg-grey-light.pal.animate.slide-down.ng-cloak.bor(ng-show="playGameOptions")
+                    h5.text-dark-gray2 
+                        img(src="stylesheets/stylesheets/ball/1/svg/pantone.svg" alt="" width='40px')
+                        | &nbsp;Play a Game
+                    .col-md-8.pan
+                        
+                        .btn-group.btn-group.mtm(style="padding-left:-13px")
+                            button.btn.btn-default.dropdown-toggle.bg-white.text-dark-gray(type="button", data-toggle="dropdown", style="background:#fff;color:#888;border:1px solid #ddd;")
+                                | {{activePlayCategory.name || 'Select a Category'}}
+                                span.caret
+                            ul.dropdown-menu.dropdown-menu.bor(role="menu", style='margin-top:2px;')
+                                li(ng-repeat="category in gamesIndex", ng-click="changePlayCategory(category)")
+                                    a {{category.name}}
+
+                        br            
+                        .btn-group.btn-group.mtm(style="padding-left:-13px")
+                            button.btn.btn-default.dropdown-toggle.bg-white.text-dark-gray(type="button", data-toggle="dropdown", style="background:#fff;color:#888;border:1px solid #ddd;")
+                                | {{activePlayGame.name || 'Select a Game'}}
+                                span.caret
+                            ul.dropdown-menu.dropdown-menu.bor(role="menu", style='margin-top:2px;')
+                                li(ng-repeat="(gameId, game) in activePlayCategory.games", ng-click="changePlayGame(game, gameId)")
+                                    a {{game.name}}
+
+                    .col-md-12.pan                                            
+                        .btn.btn-primary.mtl(ng-click="triggerGameScreen()")
+                            | Play            
+
+
+
+                .col-md-12.bg-grey-light.pal.animate.slide-down.ng-cloak.bor(ng-show="playGameScreen")
+                    .col-md-3
+                        h5.text-dark-gray2.mbn 
+                            img(src="stylesheets/stylesheets/ball/1/svg/pantone.svg" alt="" width='40px')
+                            | &nbsp;{{activePlayGame.name}}
+                            
+                        h6.text-dark-gray.mll.pll.mtn.mrn.mbn.prn.ptn.pbn.light-weight(style='font-size:14px') &nbsp;{{activePlayCategory.name}}
+                    .col-md-9
+                        .pas.bor.text-dark-gray.bg-white.mtl.mrs.mls.pull-right(style='cursor:default') Guesses Left: {{guessesLeft}}
+                        .pas.bor.text-dark-gray.bg-white.mtl.mrs.pull-right(style='cursor:default') Correct: {{correctScore}} 
+                        .pas.bor.text-dark-gray.bg-white.mtl.mrs.pull-right(style='cursor:default') Wrong: {{wrongScore}} 
+                        .pas.bor.text-dark-gray.bg-white.mtl.mrs.pull-right(style='cursor:default') {{answerPercent}}%
+                        .bg-white.pas.mtl.mrs.pull-left.bor.text-dark-gray(style='cursor:default') {{minCounter}}:{{secCounter}}.{{miliCounter}}
+                        .bg-white.bor.mtl.pull-right.text-dark-gray2.mrs.pas(ng-show="gameOn", ng-if="questionsArray.length > 0") {{questionsArray[0].val.question}}
+                        .btn.btn-primary.mtl.pull-right.mrs(ng-show="!gameOn", ng-click="bootGame()") 
+                            i.icon-play
+                            | Press to start    
+
+                    
+                    .col-md-12.pan.mtl
+                        .col-md-12.man.pan(style='position:relative')
+                            span(style='position:absolute', ng-show='gameOn')
+                                i.icon-circle.cursorp(ng-class="_.contains(answersArray, dotId) ? 'text-primary' : 'text-warning'",ng-repeat="(dotId, dot) in playGameSync.dots", ng-click="evalDot(dot, dotId)", style="position:absolute;top:{{dot.y}}px;left:{{dot.x}}px")
+
+                            img(ng-click="playCanvasClick($event)", width="700" height="550" ng-src="{{playGameSync.image}}", style="border:1px solid #eee")
+
+                    .col-md-12.pan                                            
+                        .btn.btn-default.btn-xs.pull-right.mtl(ng-click="triggerGameOptions()")
+                            | Back            
+                            i.icon-reply                        
 
 
     
+        .modal.ng-cloak.animate.bouncy-slide-top(ng-show="enableModal")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        button.close.fui-cross(type="button", data-dismiss="modal", aria-hidden="true", ng-click="disableModal()")
+                        h4.modal-title.text-dark-gray2
+                            //- | {{modalHeader}}
+                            | Score
+                    .modal-body
+                        //- p(ng-bind-html="modalContent")
+                        .row.col-md-12
+                            .col-md-12(ng-show="showScores")
+                                table.table
+                                    thead
+                                        tr
+                                            td First Name
+                                            td Last Name
+                                            td Time
+                                    tbody
+                                        tr(ng-repeat="score in currentHighScores")
+                                            td {{score.firstName}}
+                                            td {{score.lastName}}
+                                            td {{score.totalTime/100}} Seconds
+
+                            .col-md-12(ng-show="!showScores")
+                                p You scored {{answerPercent}}% in {{minCounter}}:{{secCounter}}:{{miliCounter}} minutes!
+                                p Your unique code for this score: {{uniqueCode}}
+                                p Please enter your first and last name to view scores
+                                .col-md-12.mtl.ptl.mbl.pbl
+                                    .col-md-6
+                                        input.form-control(type='text', ng-model='scoreFirstName', placeholder='First name')
+                                    .col-md-6        
+                                        input.form-control(type='text', ng-model='scoreLastName', placeholder='Last name')
+                        
+                    .modal-footer
+                        .btn.btn-sm.btn-primary(ng-click='submitScore(scoreFirstName, scoreLastName)', ng-show='!showScores') Show Scores    
+                        a.btn.btn-default.btn-wide(href="", ng-click="playAgain()", ng-show='showScores') Play Again
+                        a.btn.btn-default.btn-wide(href="", ng-click="gameMenu()", ng-show='showScores') Game Menu
+
+
+
+
+
