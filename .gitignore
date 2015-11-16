@@ -11,6 +11,8 @@
 /dist/node_modules
 bower_components
 .idea
+uploads
+dist/uploads
 # Ignore all logfiles and tempfiles.
 *.log
 /tmp
