@@ -356,6 +356,7 @@ define ['externalApp/base','angularjs', 'fbase'], (AngApp) ->
           FirebaseService.rootRef.child("scores/#{$scope.activePlayGameId}").push().set {uniqueCode: $scope.uniqueCode, totalTime: totalTime, firstName: scoreFirstName, lastName: scoreLastName, correct: $scope.correctScore, wrong: $scope.correctScore, answerPercent: $scope.answerPercent}
           if $scope.wrongScore == 0
             FirebaseService.rootRef.child("topScores/#{$scope.activePlayGameId}").push().set {uniqueCode: $scope.uniqueCode, totalTime: totalTime, firstName: scoreFirstName, lastName: scoreLastName, correct: $scope.correctScore, wrong: $scope.correctScore, answerPercent: $scope.answerPercent}
+            FirebaseService.rootRef.child("uniqueCodeReference/#{$scope.uniqueCode}").set {uniqueCode: $scope.uniqueCode, totalTime: totalTime, firstName: scoreFirstName, lastName: scoreLastName, correct: $scope.correctScore, wrong: $scope.correctScore, answerPercent: $scope.answerPercent}
 
           $scope.showScores = true 
           $scope.currentHighScores = $firebaseArray(FirebaseService.rootRef.child("topScores/#{$scope.activePlayGameId}").orderByChild('totalTime').limitToFirst(10)) 
