@@ -223,6 +223,7 @@ define ['externalApp/base','angularjs', 'fbase'], (AngApp) ->
                   questions.push {key: key, val: val}
 
                 $scope.questionsArray = questions
+                $scope.questionsArrayLength = questions.length
                 $scope.answersArray = []
                 $scope.correctScore = 0
                 $scope.wrongScore = 0
@@ -253,6 +254,8 @@ define ['externalApp/base','angularjs', 'fbase'], (AngApp) ->
             $scope.secCounter = 0
           else  
             $scope.secCounter = $scope.secCounter + 1
+
+          $scope.evalTimerSettings()  
         , 1000
         $scope.minPromise = $interval ->
           $scope.minCounter = $scope.minCounter + 1
@@ -261,6 +264,18 @@ define ['externalApp/base','angularjs', 'fbase'], (AngApp) ->
       $scope.disableModal = () ->
         $scope.enableModal = false
           
+
+      $scope.evalTimerSettings = () ->
+        theVal = parseInt($scope.playGameSync.settings.timer.val)/1000
+        currentSeconds = $scope.minCounter*60 + $scope.secCounter
+        if theVal == currentSeconds
+          $interval.cancel($scope.miliPromise)
+          $interval.cancel($scope.secPromise)
+          $interval.cancel($scope.minPromise)
+          $scope.uniqueCode = Math.random().toString(36).slice(2).toUpperCase()
+          $scope.enableModal = true
+
+
 
       $scope.evalDot = (dot, dotId) ->
         unless _.contains($scope.answersArray, dotId)
@@ -280,14 +295,54 @@ define ['externalApp/base','angularjs', 'fbase'], (AngApp) ->
             $scope.uniqueCode = Math.random().toString(36).slice(2).toUpperCase()
             $scope.enableModal = true
 
+        $scope.evalChanceSettings()
+            
+
+      $scope.evalChanceSettings = () ->
+        if $scope.playGameSync.settings.chances.val == 'asMany'
+          if $scope.questionsArrayLength == $scope.correctScore + $scope.wrongScore
+            $interval.cancel($scope.miliPromise)
+            $interval.cancel($scope.secPromise)
+            $interval.cancel($scope.minPromise)
+            $scope.uniqueCode = Math.random().toString(36).slice(2).toUpperCase()
+            $scope.enableModal = true
+              
+        else if $scope.playGameSync.settings.chances.val == 'firstWrong'
+          if $scope.wrongScore == 1
+            $interval.cancel($scope.miliPromise)
+            $interval.cancel($scope.secPromise)
+            $interval.cancel($scope.minPromise)
+            $scope.uniqueCode = Math.random().toString(36).slice(2).toUpperCase()
+            $scope.enableModal = true
+        else if $scope.playGameSync.settings.chances.val == 'secondWrong'    
+          if $scope.wrongScore == 2
+            $interval.cancel($scope.miliPromise)
+            $interval.cancel($scope.secPromise)
+            $interval.cancel($scope.minPromise)
+            $scope.uniqueCode = Math.random().toString(36).slice(2).toUpperCase()
+            $scope.enableModal = true
+        else if $scope.playGameSync.settings.chances.val == 'thirdWrong'    
+          if $scope.wrongScore == 3
+            $interval.cancel($scope.miliPromise)
+            $interval.cancel($scope.secPromise)
+            $interval.cancel($scope.minPromise)
+            $scope.uniqueCode = Math.random().toString(36).slice(2).toUpperCase()
+            $scope.enableModal = true  
+
+              
+
+
+
+
+
 
       $scope.submitScore = (scoreFirstName, scoreLastName) ->
         if scoreFirstName and scoreLastName
           # totalTime = $scope.miliCounter*100 + $scope.secCounter*1000 + $scope.minCounter*60*1000
           totalTime = Math.floor(Math.random() * 600) + 1  
-          FirebaseService.rootRef.child("scores/#{$scope.activePlayGameId}").push().set {totalTime: totalTime, firstName: scoreFirstName, lastName: scoreLastName, correct: $scope.correctScore, wrong: $scope.correctScore, answerPercent: $scope.answerPercent}
+          FirebaseService.rootRef.child("scores/#{$scope.activePlayGameId}").push().set {uniqueCode: $scope.uniqueCode, totalTime: totalTime, firstName: scoreFirstName, lastName: scoreLastName, correct: $scope.correctScore, wrong: $scope.correctScore, answerPercent: $scope.answerPercent}
           if $scope.wrongScore == 0
-            FirebaseService.rootRef.child("topScores/#{$scope.activePlayGameId}").push().set {totalTime: totalTime, firstName: scoreFirstName, lastName: scoreLastName, correct: $scope.correctScore, wrong: $scope.correctScore, answerPercent: $scope.answerPercent}
+            FirebaseService.rootRef.child("topScores/#{$scope.activePlayGameId}").push().set {uniqueCode: $scope.uniqueCode, totalTime: totalTime, firstName: scoreFirstName, lastName: scoreLastName, correct: $scope.correctScore, wrong: $scope.correctScore, answerPercent: $scope.answerPercent}
 
           $scope.showScores = true 
           $scope.currentHighScores = $firebaseArray(FirebaseService.rootRef.child("topScores/#{$scope.activePlayGameId}").orderByChild('totalTime').limitToFirst(10)) 
