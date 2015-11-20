@@ -58,9 +58,9 @@ define ['externalApp/base','angularjs', 'fbase'], (AngApp) ->
 
       $scope.upload = (file) ->
         Upload.upload(
-          url: 'http://localhost:3000/upload'
+          # url: 'http://localhost:3000/upload'
           # url: 'http://mosaiced.nodelabs.in/upload'
-          # url: 'http://128.199.235.191/upload'
+          url: 'http://128.199.235.191/upload'
           # url: 'http://271f9c29.ngrok.io/upload'
           data:
             file: file)
