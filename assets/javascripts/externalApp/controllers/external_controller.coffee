@@ -32,12 +32,24 @@ define ['externalApp/base','angularjs', 'fbase'], (AngApp) ->
       $scope.stepStates = {stepOne: true, stepTwo: false, stepThree: false}
       $scope._ = _
 
+      # categories = ['Neuroanatomy', 'Abdomen + Pelvis', 'Upper Limb', 'Lower Limb Anatomy', 'Head and Neck Anatomy', 'Thorax', 'Eyes Ears, Nose, Throat', 
+      # 'Cardiac Physiology', 'Respiratory Physiology', 'Renal Physiology', 'Gastrointestinal Physiology', 'Neuroscience', 'Reproductive Physiology', 'Muscle Physiology',
+      # 'Endrocrine Physiology', 'Pharmacology', 'Pathology', 'Genetics', 'Embryology', 'Microbiology', 'Histology', 'Immunology', 'Anasthetics', 'Breast and Endocrine Surgery',
+      # 'Cardiology', 'Cardiothoracic Surgery', 'Colorectal Surgery', 'Dermatology', 'Emergency Medicine', 'Endocrinology', 'Ear, Nose and Throat Surgery', 'General Practice(Family)',
+      # 'Gastroenterology', 'General Surgery', 'Geriatrics', 'Haematology', 'Infectious Diseases', 'Intensive Care Medicine', 'Nephrology', 'Neurosurgery', 'Obstetrics and Gynecology', 
+      # 'Opthalmology', 'Orthopaedic Surgery', 'Paediatric Surgery', 'Plastic Surgery', 'Respiratory Medicine', 'Radiology', 'Psychiatry' ]
+
+      # for cat in categories
+      #   ref = FirebaseService.rootRef.child("indexes/categories").push()
+      #   ref.set {name: cat}
+      #   FirebaseService.rootRef.child("categories/#{ref.key()}").set {name: cat}
+
       # ref1 = FirebaseService.rootRef.child("indexes/categories").push()
       # ref2 = FirebaseService.rootRef.child("indexes/categories").push()
-      # ref1.set {name: 'Category 1'}
-      # ref2.set {name: 'Category 2'}
-      # FirebaseService.rootRef.child("categories/#{ref1.key()}").set {name: 'Category 1'}
-      # FirebaseService.rootRef.child("categories/#{ref2.key()}").set {name: 'Category 2'}
+      # ref1.set {name: 'Neuroanatomy'}
+      # ref2.set {name: 'Abdomen + Pelvis'}
+      # FirebaseService.rootRef.child("categories/#{ref1.key()}").set {name: 'Neuroanatomy'}
+      # FirebaseService.rootRef.child("categories/#{ref2.key()}").set {name: 'Abdomen + Pelvis'}
 
 
 
@@ -108,6 +120,7 @@ define ['externalApp/base','angularjs', 'fbase'], (AngApp) ->
         else if pane == 'upload'
           if $scope.previewUrl
             $scope.activeCreatePane = 'mark'
+            alert 'Please click on the image and add questions now'
             # $scope.createImageStyle = {'background-image': "url(#{$scope.previewUrl})", 'background-size': 'contain', 'background-repeat': 'no-repeat', 'width': '100%', 'height': $scope.previewUrlHeight}
           else
             alert 'Please choose an image first.'  
@@ -222,7 +235,7 @@ define ['externalApp/base','angularjs', 'fbase'], (AngApp) ->
                 angular.forEach $scope.playGameSync.dots, (val,key) ->
                   questions.push {key: key, val: val}
 
-                $scope.questionsArray = questions
+                $scope.questionsArray = _.shuffle(questions)
                 $scope.questionsArrayLength = questions.length
                 $scope.answersArray = []
                 $scope.correctScore = 0
