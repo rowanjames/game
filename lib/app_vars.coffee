@@ -33,14 +33,14 @@ class AppVars
 #      rootUrl = 'https://test-gilders.firebaseio.com/'
       rootRef = new Firebase(rootUrl)
 
-      mailgunUser = "postmaster@gilders.in"
-      mailgunPassword = "2c4d81e60d6a3ebb25a553293ef40572"
+      mailgunUser = ""
+      mailgunPassword = ""
 
       currentEnv = 'production'
 
       pdfServer = "http://128.199.211.157:8080"
 
-      faceBookAppId = '655542997911641'
+      faceBookAppId = ''
 
 #      cronJobKeepAlive = cron.job "0 30 * * * *", () =>
 #        needle.get "http://www.gilders.in", (error, response) ->
@@ -55,8 +55,8 @@ class AppVars
 
       currentServer = 'http://localhost:3000'
 
-      mailgunUser = "postmaster@gilders.in"
-      mailgunPassword = "2c4d81e60d6a3ebb25a553293ef40572"
+      mailgunUser = ""
+      mailgunPassword = ""
 
 
       currentEnv = 'development'
@@ -64,7 +64,7 @@ class AppVars
 
       pdfServer = "http://128.199.211.157:8080"
 
-      faceBookAppId = '655542997911641'
+      faceBookAppId = ''
 
 
 
