@@ -28,7 +28,8 @@ class AppVars
 
     if @options.app.settings.env == 'production'
       # currentServer = 'http://www.gilders.in'
-      rootUrl = 'https://dev-mosaiced.firebaseio.com/'
+      # rootUrl = 'https://dev-mosaiced.firebaseio.com/'
+      rootUrl = 'https://prod-mosaiced.firebaseio.com'
 #      rootUrl = 'https://test-gilders.firebaseio.com/'
       rootRef = new Firebase(rootUrl)
 
@@ -48,7 +49,8 @@ class AppVars
 
 
     else
-      rootUrl = 'https://dev-mosaiced.firebaseio.com/'
+      # rootUrl = 'https://dev-mosaiced.firebaseio.com/'
+      rootUrl = 'https://prod-mosaiced.firebaseio.com'
       rootRef = new Firebase(rootUrl)
 
       currentServer = 'http://localhost:3000'
